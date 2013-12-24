@@ -27,6 +27,21 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
+		type = "shapeless",
+		output = 'icetools:ice_crystal_refined 9',
+		recipe = {'icetools:ice_crystal_block'},
+	})
+
+minetest.register_craft({
+		output = 'icetools:ice_crystal_block',
+		recipe = {
+				{'icetools:ice_crystal_refined','icetools:ice_crystal_refined','icetools:ice_crystal_refined'},
+				{'icetools:ice_crystal_refined','icetools:ice_crystal_refined','icetools:ice_crystal_refined'},
+				{'icetools:ice_crystal_refined','icetools:ice_crystal_refined','icetools:ice_crystal_refined'},
+		}
+})
+
+minetest.register_craft({
 	output = "icetools:sword_ice",
 	recipe = {
 		{"icetools:ice_crystal_refined"},
@@ -232,4 +247,14 @@ minetest.register_ore({
 	height_min     = -31000,
 	height_max     = -64,
 	flags          = "absheight",
+})
+
+minetest.register_node('icetools:ice_crystal_block', {
+        description = 'Ice Crystal Block',
+        tiles = {'icetools_ice_crystal_block.png'},
+		light_source = 15,
+        is_ground_content = true,
+        groups = {cracky=1,level=3},
+		drop = 'icetools:ice_crystal_block',
+        sounds = default.node_sound_stone_defaults(),
 })
