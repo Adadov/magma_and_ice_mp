@@ -5,14 +5,13 @@ By Qwrwed and Asg.
 License: WTFPL for code, CC-BY-NC-SA for textures (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 
 This modpack includes:
-Ice tools
-Ice ore
-Ice crystals
-Ice block
-Magmatools
-Magma ore
-Magma crystal
-Magma block
-Paxels
+Ice tools,
+Ice ore,
+Ice crystals,
+Ice block,
+Magmatools,
+Magma ore,
+Magma crystal,
+Magma block,
+Paxels and
 Paxel creator
-
