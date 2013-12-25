@@ -149,57 +149,6 @@ minetest.register_tool("icetools:axe_ice", {
 	},
 })
 
---[[minetest.register_craftitem("icetools:steel_melted", {
-	description = "Melted Steel",
-	inventory_image = "icetools_steel_melted.png",
-})
-
-minetest.register_node("icetools:ice_cracked", {
-	description = "Cracked Ice",
-	drawtype = "glasslike",
-	tiles = {"icetools_ice_cracked.png"},
-	paramtype = "light",
-	sunlight_propagates = true,
-	groups = {cracky=3,oddly_breakable_by_hand=3},
-	sounds = default.node_sound_glass_defaults(),
-})
-
-minetest.register_node("icetools:ice_reinforced", {
-	description = "Reinforced Ice",
-	tiles = {"icetools_ice_reinforced.png"},
-	is_ground_content = true,
-	groups = {cracky=1,level=2},
-	sounds = default.node_sound_stone_defaults(),
-})
-
-minetest.register_craft({
-	type = "cooking",
-	output = "icetools:steel_melted",
-	recipe = "default:steel_ingot",
-})
-
-
-minetest.register_craft({
-	output = "icetools:ice_cracked",
-	recipe = {
-		{"","bucket:bucket_water",""},
-		{"bucket:bucket_water","default:steel_ingot","bucket:bucket_water"},
-		{"","bucket:bucket_water",""},
-	},
-	replacements = { {"bucket:bucket_water", "bucket:bucket_empty"}, {"bucket:bucket_water", "bucket:bucket_empty"}, {"bucket:bucket_water", "bucket:bucket_empty"}, {"bucket:bucket_water", "bucket:bucket_empty"} },
-})
-
-minetest.register_craft({
-	output = "icetools:ice_reinforced",
-	recipe = {
-		{"","icetools:steel_melted",""},
-		{"icetools:steel_melted","icetools:ice_cracked","icetools:steel_melted"},
-		{"","icetools:steel_melted",""},
-	}
-})
-
-
-]]
 
 minetest.register_tool("icetools:hoe_ice", {
     description = "Ice Hoe",
@@ -250,11 +199,11 @@ minetest.register_ore({
 })
 
 minetest.register_node('icetools:ice_crystal_block', {
-        description = 'Ice Crystal Block',
-        tiles = {'icetools_ice_crystal_block.png'},
-		light_source = 15,
-        is_ground_content = true,
-        groups = {cracky=1,level=3},
-		drop = 'icetools:ice_crystal_block',
-        sounds = default.node_sound_stone_defaults(),
+    description = 'Refined Ice Crystal Block',
+	paramtype2 = 'facedir',
+	tiles = {"icetools_ice_crystal_block.png", "icetools_ice_crystal_block.png^[transformR270", "icetools_ice_crystal_block.png^[transformR90",
+	"icetools_ice_crystal_block.png", "icetools_ice_crystal_block.png^[transformR270", "icetools_ice_crystal_block.png^[transformR180"},
+	light_source = LIGHT_MAX,
+    groups = {cracky=1,level=3},
+    sounds = default.node_sound_stone_defaults(),
 })

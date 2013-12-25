@@ -82,6 +82,29 @@ if minetest.get_modpath("paxels") == nil then
 	})
 end
 
+minetest.register_craft({
+		type = "shapeless",
+		output = 'magmatools:magma_crystal_refined 9',
+		recipe = {'magmatools:magma_crystal_block'},
+	})
+
+minetest.register_craft({
+		output = 'magmatools:magma_crystal_block',
+		recipe = {
+				{'magmatools:magma_crystal_refined','magmatools:magma_crystal_refined','magmatools:magma_crystal_refined'},
+				{'magmatools:magma_crystal_refined','magmatools:magma_crystal_refined','magmatools:magma_crystal_refined'},
+				{'magmatools:magma_crystal_refined','magmatools:magma_crystal_refined','magmatools:magma_crystal_refined'},
+		}
+})
+
+minetest.register_node('magmatools:magma_crystal_block', {
+        description = 'Refined Magma Crystal Block',
+        tiles = {'magmatools_magma_crystal_block_top.png', 'magmatools_magma_crystal_block_bottom.png', 'magmatools_magma_crystal_block.png'},
+		light_source = LIGHT_MAX,
+        groups = {cracky=1,level=3},
+        sounds = default.node_sound_stone_defaults(),
+})
+
 minetest.register_tool('magmatools:sword_magma', {
 	description = 'Magma Sword',
 	inventory_image = 'magmatools_tool_magmasword.png',
