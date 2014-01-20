@@ -15,6 +15,11 @@ minetest.register_craftitem('magmatools:magma_crystal', {
 	inventory_image = 'magmatools_magma_crystal.png',
 })
 
+minetest.register_craftitem('magmatools:lava_source', {
+	description = 'Lava',
+	inventory_image = minetest.inventorycube("default_lava.png"),
+})
+
 minetest.register_craftitem('magmatools:magma_crystal_refined', {
 	description = 'Refined Magma Crystal',
 	inventory_image = 'magmatools_magma_crystal_refined.png',
@@ -97,6 +102,14 @@ minetest.register_craft({
 		}
 })
 
+minetest.register_craft({
+		output = 'bucket:bucket_lava',
+		recipe = {
+				{'magmatools:lava_source'},
+				{'bucket:bucket_empty'},
+		}
+})
+
 minetest.register_node('magmatools:magma_crystal_block', {
         description = 'Refined Magma Crystal Block',
         tiles = {'magmatools_magma_crystal_block_top.png', 'magmatools_magma_crystal_block_bottom.png', 'magmatools_magma_crystal_block.png'},
@@ -117,7 +130,34 @@ minetest.register_tool('magmatools:sword_magma', {
 		damage_groups = {fleshy=10},
 	}
 })
+local old_handle_node_drops = minetest.handle_node_drops
+function minetest.handle_node_drops(pos, drops, digger)
+        local tool = digger:get_wielded_item():get_name()
+        if tool == ('magmatools:pick_magma') or (tool == 'magmatools:axe_magma') or (tool == 'magmatools:shovel_magma') or (tool == 'magmatools:paxel_magma') then
+                local newdrops = { }
+                for _, drop in ipairs(drops) do
+                        local stack = ItemStack(drop)
+						local product = minetest.get_craft_result({method = "cooking", width = 1, items = {drop}})
+                        if product and product.item and (not product.item:is_empty())  then
+                                table.insert(newdrops, ItemStack({
+                                        name = product.item:get_name(),
+                                        count = stack:get_count(),
+                                }))
+                        else
+                                table.insert(newdrops, stack)
+                        end
+                end
+                drops = newdrops
+        end
+		if tool == 'magmatools:shovel_magma' then
+		end
+        return old_handle_node_drops(pos, drops, digger)
+end
+local old_register_on_dignode = minetest.register_on_dignode
 
+
+
+local groupcaps ={times={[1]=1.20, [2]=0.60, [3]=0.30}, uses=40, maxlevel=3}
 minetest.register_tool('magmatools:pick_magma', {
 	description = 'Magma Pickaxe',
 	inventory_image = 'magmatools_tool_magmapick.png',
@@ -125,7 +165,7 @@ minetest.register_tool('magmatools:pick_magma', {
 		full_punch_interval = 0.4,
 		max_drop_level=3,
 		groupcaps={
-			cracky = {times={[1]=0.90, [2]=0.40, [3]=0.10}, uses=50, maxlevel=3},
+			cracky = groupcaps,
 		},
 		damage_groups = {fleshy=6},
 	},
@@ -133,29 +173,54 @@ minetest.register_tool('magmatools:pick_magma', {
 
 minetest.register_tool('magmatools:shovel_magma', {
 	description = 'Magma Shovel',
+	liquids_pointable = true,
 	inventory_image = 'magmatools_tool_magmashovel.png',
 	wield_image = 'magmatools_tool_magmashovel.png^[transformR90',
 	tool_capabilities = {
 		full_punch_interval = 0.4,
 		max_drop_level=1,
 		groupcaps={
-			crumbly = {times={[1]=0.90, [2]=0.40, [3]=0.10}, uses=50, maxlevel=3},
+			crumbly = groupcaps,
 		},
 		damage_groups = {fleshy=5},
 	},
+	
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'magmatools:shovel_magma' then
+			if node.name == "default:lava_source" then
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "magmatools:lava_source")
+				end
+			elseif node.name == "default:lava_flowing" then
+				minetest.remove_node(pos)
+			end
+		end
+	end)
 })
 
 minetest.register_tool('magmatools:axe_magma', {
 	description = 'Magma Axe',
 	inventory_image = 'magmatools_tool_magmaaxe.png',
+	liquids_pointable = true,
 	tool_capabilities = {
 		full_punch_interval = 0.4,
 		max_drop_level=1,
 		groupcaps={
-			choppy={times={[1]=0.90, [2]=0.40, [3]=0.10}, uses=50, maxlevel=2},
+			choppy=groupcaps,
 		},
 		damage_groups = {fleshy=7},
 	},
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'magmatools:axe_magma' then
+			if node.name == "default:lava_source" then
+				minetest.add_node(pos, { name="default:lava_flowing"})
+			elseif node.name == "default:lava_flowing" then	
+				minetest.remove_node(pos)
+			end
+		end
+	end)
 })
 
 
@@ -185,9 +250,9 @@ minetest.register_tool('magmatools:paxel_magma', {
 		full_punch_interval = 0.4,
 		max_drop_level=3,
 		groupcaps={
-			choppy = {times={[1]=0.80, [2]=0.40, [3]=0.10}, uses=50, maxlevel=2},
-			crumbly = {times={[1]=0.80, [2]=0.40, [3]=0.10}, uses=50, maxlevel=3},
-			cracky = {times={[1]=0.80, [2]=0.40, [3]=0.10}, uses=50, maxlevel=3},
+			choppy = groupcaps,
+			crumbly = groupcaps,
+			cracky = groupcaps,
 		},
 		damage_groups = {fleshy=8},
 	},
