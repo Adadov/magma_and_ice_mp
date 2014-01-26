@@ -128,32 +128,37 @@ minetest.register_tool('magmatools:sword_magma', {
 			snappy={times={[1]=1.50, [2]=0.60, [3]=0.20}, uses=50, maxlevel=3},
 		},
 		damage_groups = {fleshy=10},
-	}
+	},
+	minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
+		if puncher:get_wielded_item():get_name() == 'magmatools:sword_magma' then
+			if node.name ~= "air" then
+				minetest.add_node(pointed_thing.above, {name = "fire:basic_flame"})
+			end
+		end
+	end)
 })
+
 local old_handle_node_drops = minetest.handle_node_drops
 function minetest.handle_node_drops(pos, drops, digger)
-        local tool = digger:get_wielded_item():get_name()
-        if tool == ('magmatools:pick_magma') or (tool == 'magmatools:axe_magma') or (tool == 'magmatools:shovel_magma') or (tool == 'magmatools:paxel_magma') then
-                local newdrops = { }
-                for _, drop in ipairs(drops) do
-                        local stack = ItemStack(drop)
-						local product = minetest.get_craft_result({method = "cooking", width = 1, items = {drop}})
-                        if product and product.item and (not product.item:is_empty())  then
-                                table.insert(newdrops, ItemStack({
-                                        name = product.item:get_name(),
-                                        count = stack:get_count(),
-                                }))
-                        else
-                                table.insert(newdrops, stack)
-                        end
-                end
-                drops = newdrops
+    local tool = digger:get_wielded_item():get_name()
+    if tool == ('magmatools:pick_magma') or (tool == 'magmatools:axe_magma') or (tool == 'magmatools:shovel_magma') or (tool == 'magmatools:paxel_magma') then
+        local newdrops = { }
+        for _, drop in ipairs(drops) do
+            local stack = ItemStack(drop)
+			local product = minetest.get_craft_result({method = "cooking", width = 1, items = {drop}})
+            if product and product.item and (not product.item:is_empty())  then
+                table.insert(newdrops, ItemStack({
+                    name = product.item:get_name(),
+                    count = stack:get_count(),
+                }))
+            else
+                table.insert(newdrops, stack)
+            end
         end
-		if tool == 'magmatools:shovel_magma' then
-		end
-        return old_handle_node_drops(pos, drops, digger)
+        drops = newdrops
+    end
+    return old_handle_node_drops(pos, drops, digger)
 end
-local old_register_on_dignode = minetest.register_on_dignode
 
 
 
@@ -185,7 +190,7 @@ minetest.register_tool('magmatools:shovel_magma', {
 		damage_groups = {fleshy=5},
 	},
 	
-	minetest.register_on_punchnode(function(pos, node, puncher)
+	minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 		if puncher:get_wielded_item():get_name() == 'magmatools:shovel_magma' then
 			if node.name == "default:lava_source" then
 				minetest.remove_node(pos)
@@ -212,7 +217,7 @@ minetest.register_tool('magmatools:axe_magma', {
 		},
 		damage_groups = {fleshy=7},
 	},
-	minetest.register_on_punchnode(function(pos, node, puncher)
+	minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 		if puncher:get_wielded_item():get_name() == 'magmatools:axe_magma' then
 			if node.name == "default:lava_source" then
 				minetest.add_node(pos, { name="default:lava_flowing"})
