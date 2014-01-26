@@ -15,6 +15,19 @@ minetest.register_craftitem("icetools:ice_crystal", {
 	inventory_image = "icetools_ice_crystal.png",
 })
 
+minetest.register_craftitem('icetools:water_source', {
+	description = 'Water',
+	inventory_image = minetest.inventorycube("default_water.png"),
+})
+
+minetest.register_craft({
+		output = 'bucket:bucket_water',
+		recipe = {
+				{'icetools:water_source'},
+				{'bucket:bucket_empty'},
+		}
+})
+
 minetest.register_craftitem("icetools:ice_crystal_refined", {
 	description = "Refined Ice Crystal",
 	inventory_image = "icetools_ice_crystal_refined.png",
@@ -99,6 +112,7 @@ end
 minetest.register_tool("icetools:sword_ice", {
 	description = "Ice Sword",
 	inventory_image = "icetools_tool_icesword.png",
+	liquids_pointable = true,
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		max_drop_level=1,
@@ -106,12 +120,20 @@ minetest.register_tool("icetools:sword_ice", {
 			snappy={times={[1]=1.50, [2]=0.60, [3]=0.20}, uses=50, maxlevel=3},
 		},
 		damage_groups = {fleshy=9},
-	}
+	},
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'icetools:sword_ice' then
+			if node.name == "default:water_source" then
+				minetest.add_node(pos, { name="default:ice"})
+			end
+		end
+	end)
 })
 
 minetest.register_tool("icetools:pick_ice", {
 	description = "Ice Pickaxe",
 	inventory_image = "icetools_tool_icepick.png",
+	liquids_pointable = true,
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		max_drop_level=3,
@@ -120,12 +142,24 @@ minetest.register_tool("icetools:pick_ice", {
 		},
 		damage_groups = {fleshy=5},
 	},
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'icetools:pick_ice' then
+			if node.name == "default:lava_source" then
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "default:stone")
+				end
+			end
+		end
+	end)
 })
 
 minetest.register_tool("icetools:shovel_ice", {
 	description = "Ice Shovel",
 	inventory_image = "icetools_tool_iceshovel.png",
 	wield_image = "icetools_tool_iceshovel.png^[transformR90",
+	liquids_pointable = true,
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		max_drop_level=1,
@@ -134,11 +168,25 @@ minetest.register_tool("icetools:shovel_ice", {
 		},
 		damage_groups = {fleshy=4},
 	},
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'icetools:shovel_ice' then
+			if node.name == "default:water_source" then
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "icetools:water_source")
+				end
+			elseif node.name == "default:water_flowing" then
+				minetest.remove_node(pos)
+			end
+		end
+	end)
 })
 
 minetest.register_tool("icetools:axe_ice", {
 	description = "Ice Axe",
 	inventory_image = "icetools_tool_iceaxe.png",
+	liquids_pointable = true,
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		max_drop_level=1,
@@ -147,6 +195,17 @@ minetest.register_tool("icetools:axe_ice", {
 		},
 		damage_groups = {fleshy=7},
 	},
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'icetools:axe_ice' then
+			if node.name == "default:water_source" then
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "default:ice")
+				end
+			end
+		end
+	end)
 })
 
 
@@ -172,6 +231,7 @@ minetest.register_tool("icetools:hoe_ice", {
 minetest.register_tool("icetools:paxel_ice", {
 	description = "Ice Paxel",
 	inventory_image = "icetools_tool_icepaxel.png",
+	liquids_pointable = true,
 	tool_capabilities = {
 		full_punch_interval = 0.5,
 		max_drop_level=3,
@@ -182,6 +242,36 @@ minetest.register_tool("icetools:paxel_ice", {
 		},
 		damage_groups = {fleshy=8},
 	},
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'icetools:paxel_ice' then
+			if node.name == "default:lava_source" then
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "default:stone")
+				end
+			elseif node.name == "default:water_source" then	
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "default:ice")
+				end
+			end
+		end
+	end),
+	minetest.register_on_punchnode(function(pos, node, puncher)
+		if puncher:get_wielded_item():get_name() == 'icetools:paxel_ice' then
+			if node.name == "default:water_source" then
+				minetest.remove_node(pos)
+				local inv = puncher:get_inventory()
+				if inv then
+					inv:add_item("main", "icetools:water_source")
+				end
+			elseif node.name == "default:water_flowing" then
+				minetest.remove_node(pos)
+			end
+		end
+	end)
 })
 
 
