@@ -121,13 +121,16 @@ minetest.register_tool("icetools:sword_ice", {
 		},
 		damage_groups = {fleshy=9},
 	},
-	minetest.register_on_punchnode(function(pos, node, puncher)
-		if puncher:get_wielded_item():get_name() == 'icetools:sword_ice' then
+minetest.register_on_punchnode(function(pos, node, puncher)
+		tool = puncher:get_wielded_item() 
+		if tool:get_name() == "icetools:sword_ice" then
 			if node.name == "default:water_source" then
 				minetest.add_node(pos, { name="default:ice"})
+				tool:add_wear(65535/75)
+				puncher:set_wielded_item(tool)
 			end
 		end
-	end)
+	end)	
 })
 
 minetest.register_tool("icetools:pick_ice", {
