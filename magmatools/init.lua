@@ -8,6 +8,10 @@ minetest.register_node('magmatools:stone_with_magma_crystal', {
 	groups = {level=2, cracky=2},
 	drop = 'magmatools:magma_crystal',
 	sounds = default.node_sound_stone_defaults(),
+	clust_scarcity = 9 * 9 * 9,
+	clust_size = 9,
+	clust_num_ores = 3,
+	y_max = -80,
 })
 
 minetest.register_craftitem('magmatools:magma_crystal', {
@@ -189,7 +193,7 @@ minetest.register_tool('magmatools:shovel_magma', {
 		},
 		damage_groups = {fleshy=5},
 	},
-	
+
 	minetest.register_on_punchnode(function(pos, node, puncher, pointed_thing)
 		if puncher:get_wielded_item():get_name() == 'magmatools:shovel_magma' then
 			if node.name == "default:lava_source" then
@@ -221,7 +225,7 @@ minetest.register_tool('magmatools:axe_magma', {
 		if puncher:get_wielded_item():get_name() == 'magmatools:axe_magma' then
 			if node.name == "default:lava_source" then
 				minetest.add_node(pos, { name="default:lava_flowing"})
-			elseif node.name == "default:lava_flowing" then	
+			elseif node.name == "default:lava_flowing" then
 				minetest.remove_node(pos)
 			end
 		end
@@ -242,7 +246,7 @@ minetest.register_tool('magmatools:hoe_magma', {
 		if liquiddef ~= nil and liquiddef.itemname ~= nil and (node.name == liquiddef.source or
             (node.name == 'default:water_source' or node.name == 'default:water_flowing')) then
             minetest.add_node(pointed_thing.under, {name='default:obsidian'})
-        itemstack:add_wear(65535/70)
+        --itemstack:add_wear(65535/70)
         return itemstack
         end
     end
@@ -272,8 +276,8 @@ minetest.register_ore({
 	clust_scarcity = 24*24*24,
 	clust_num_ores = 20,
 	clust_size     = 6,
-	height_min     = -31000,
-	height_max     = -64,
+	y_min     = -31000,
+	y_max     = -64,
 	flags          = 'absheight',
 })
 
@@ -284,7 +288,7 @@ minetest.register_ore({
 	clust_scarcity = 24*24*24,
 	clust_num_ores = 24,
 	clust_size     = 6,
-	height_min     = -31000,
-	height_max     = -128,
+	y_min     = -31000,
+	y_max     = -128,
 	flags          = 'absheight',
 })

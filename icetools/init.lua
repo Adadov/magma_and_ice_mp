@@ -8,6 +8,11 @@ minetest.register_node("icetools:stone_with_ice_crystal", {
 	groups = {level=2, cracky=2},
 	drop = "icetools:ice_crystal",
 	sounds = default.node_sound_stone_defaults(),
+	clust_scarcity = 9 * 9 * 9,
+	clust_size = 9,
+	clust_num_ores = 3,
+	y_max = -80,
+
 })
 
 minetest.register_craftitem("icetools:ice_crystal", {
@@ -122,15 +127,15 @@ minetest.register_tool("icetools:sword_ice", {
 		damage_groups = {fleshy=9},
 	},
 minetest.register_on_punchnode(function(pos, node, puncher)
-		tool = puncher:get_wielded_item() 
+		tool = puncher:get_wielded_item()
 		if tool:get_name() == "icetools:sword_ice" then
 			if node.name == "default:water_source" then
 				minetest.add_node(pos, { name="default:ice"})
-				tool:add_wear(65535/75)
+				--tool:add_wear(65535/75)
 				puncher:set_wielded_item(tool)
 			end
 		end
-	end)	
+	end)
 })
 
 minetest.register_tool("icetools:pick_ice", {
@@ -225,7 +230,7 @@ minetest.register_tool("icetools:hoe_ice", {
         if liquiddef ~= nil and liquiddef.itemname ~= nil and (node.name == liquiddef.source or
             (node.name == "default:lava_source" or node.name == "default:lava_flowing")) then
             minetest.add_node(pointed_thing.under, {name="default:obsidian"})
-        itemstack:add_wear(65535/70)
+        --itemstack:add_wear(65535/70)
         return itemstack
         end
     end
@@ -253,7 +258,7 @@ minetest.register_tool("icetools:paxel_ice", {
 				if inv then
 					inv:add_item("main", "default:stone")
 				end
-			elseif node.name == "default:water_source" then	
+			elseif node.name == "default:water_source" then
 				minetest.remove_node(pos)
 				local inv = puncher:get_inventory()
 				if inv then
@@ -286,8 +291,8 @@ minetest.register_ore({
 	clust_scarcity = 24*24*24,
 	clust_num_ores = 27,
 	clust_size     = 6,
-	height_min     = -31000,
-	height_max     = -64,
+	y_min     = -31000,
+	y_max     = -64,
 	flags          = "absheight",
 })
 
